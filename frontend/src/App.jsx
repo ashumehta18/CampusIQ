@@ -19,6 +19,7 @@ import StudentSubjects from './pages/student/StudentSubjects';
 import StudentAttendance from './pages/student/StudentAttendance';
 import StudentAssessments from './pages/student/StudentAssessments';
 import StudentMarks from './pages/student/StudentMarks';
+import StudentAssignments from './pages/student/StudentAssignments';
 import FacultyDashboard from './pages/faculty/FacultyDashboard';
 import FacultyProfile from './pages/faculty/FacultyProfile';
 import FacultySubjects from './pages/faculty/FacultySubjects';
@@ -26,6 +27,7 @@ import FacultyAttendance from './pages/faculty/FacultyAttendance';
 import FacultyStudents from './pages/faculty/FacultyStudents';
 import FacultyAssessments from './pages/faculty/FacultyAssessments';
 import FacultyPerformance from './pages/faculty/FacultyPerformance';
+import FacultyAssignments from './pages/faculty/FacultyAssignments';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminDepartments from './pages/admin/AdminDepartments';
@@ -63,6 +65,7 @@ const App = () => {
             <Route path="attendance" element={<StudentAttendance />} />
             <Route path="assessments" element={<StudentAssessments />} />
             <Route path="marks" element={<StudentMarks />} />
+            <Route path="assignments" element={<StudentAssignments />} />
           </Route>
 
           {/* Faculty routes */}
@@ -81,6 +84,7 @@ const App = () => {
             <Route path="students" element={<FacultyStudents />} />
             <Route path="assessments" element={<FacultyAssessments />} />
             <Route path="performance" element={<FacultyPerformance />} />
+            <Route path="assignments" element={<FacultyAssignments />} />
           </Route>
 
           {/* Admin routes */}

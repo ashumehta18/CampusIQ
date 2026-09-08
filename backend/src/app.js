@@ -14,6 +14,8 @@ const enrollmentRoutes = require('./routes/enrollmentRoutes');
 const attendanceRoutes = require('./routes/attendanceRoutes');
 const assessmentRoutes = require('./routes/assessmentRoutes');
 const marksRoutes = require('./routes/marksRoutes');
+const assignmentRoutes = require('./routes/assignmentRoutes');
+const submissionRoutes = require('./routes/submissionRoutes');
 
 const app = express();
 
@@ -53,6 +55,8 @@ app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/assessments', assessmentRoutes);
 app.use('/api/marks', marksRoutes);
+app.use('/api/assignments', assignmentRoutes);
+app.use('/api/submissions', submissionRoutes);
 
 // 404 handler for unknown routes
 app.use((req, res) => {
