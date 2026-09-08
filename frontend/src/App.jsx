@@ -15,10 +15,15 @@ import AdminLayout from './layouts/AdminLayout';
 // Dashboard pages (stubs — filled in later phases)
 import StudentDashboard from './pages/student/StudentDashboard';
 import StudentProfile from './pages/student/StudentProfile';
+import StudentSubjects from './pages/student/StudentSubjects';
 import FacultyDashboard from './pages/faculty/FacultyDashboard';
 import FacultyProfile from './pages/faculty/FacultyProfile';
+import FacultySubjects from './pages/faculty/FacultySubjects';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminDepartments from './pages/admin/AdminDepartments';
+import AdminSubjects from './pages/admin/AdminSubjects';
+import AdminEnrollments from './pages/admin/AdminEnrollments';
 
 // Common pages
 import NotFound from './pages/NotFound';
@@ -47,6 +52,7 @@ const App = () => {
           >
             <Route path="dashboard" element={<StudentDashboard />} />
             <Route path="profile" element={<StudentProfile />} />
+            <Route path="subjects" element={<StudentSubjects />} />
           </Route>
 
           {/* Faculty routes */}
@@ -60,6 +66,7 @@ const App = () => {
           >
             <Route path="dashboard" element={<FacultyDashboard />} />
             <Route path="profile" element={<FacultyProfile />} />
+            <Route path="subjects" element={<FacultySubjects />} />
           </Route>
 
           {/* Admin routes */}
@@ -73,6 +80,9 @@ const App = () => {
           >
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="departments" element={<AdminDepartments />} />
+            <Route path="subjects" element={<AdminSubjects />} />
+            <Route path="enrollments" element={<AdminEnrollments />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
