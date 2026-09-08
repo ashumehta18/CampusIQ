@@ -16,9 +16,12 @@ import AdminLayout from './layouts/AdminLayout';
 import StudentDashboard from './pages/student/StudentDashboard';
 import StudentProfile from './pages/student/StudentProfile';
 import StudentSubjects from './pages/student/StudentSubjects';
+import StudentAttendance from './pages/student/StudentAttendance';
 import FacultyDashboard from './pages/faculty/FacultyDashboard';
 import FacultyProfile from './pages/faculty/FacultyProfile';
 import FacultySubjects from './pages/faculty/FacultySubjects';
+import FacultyAttendance from './pages/faculty/FacultyAttendance';
+import FacultyStudents from './pages/faculty/FacultyStudents';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminDepartments from './pages/admin/AdminDepartments';
@@ -53,6 +56,7 @@ const App = () => {
             <Route path="dashboard" element={<StudentDashboard />} />
             <Route path="profile" element={<StudentProfile />} />
             <Route path="subjects" element={<StudentSubjects />} />
+            <Route path="attendance" element={<StudentAttendance />} />
           </Route>
 
           {/* Faculty routes */}
@@ -67,6 +71,8 @@ const App = () => {
             <Route path="dashboard" element={<FacultyDashboard />} />
             <Route path="profile" element={<FacultyProfile />} />
             <Route path="subjects" element={<FacultySubjects />} />
+            <Route path="attendance" element={<FacultyAttendance />} />
+            <Route path="students" element={<FacultyStudents />} />
           </Route>
 
           {/* Admin routes */}
