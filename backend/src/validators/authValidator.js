@@ -22,12 +22,6 @@ const registerValidator = [
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters'),
 
-  // Convert incoming role (e.g. "Student" -> "student") before checking
-  body('role')
-    .optional()
-    .customSanitizer((value) => (value ? String(value).toLowerCase() : 'student'))
-    .isIn(['student', 'faculty', 'admin'])
-    .withMessage('Role must be student, faculty, or admin'),
 ];
 
 const loginValidator = [

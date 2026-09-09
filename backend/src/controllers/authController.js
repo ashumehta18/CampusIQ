@@ -19,7 +19,7 @@ const register = async (req, res, next) => {
   try {
     // Map fullName -> name if frontend passes fullName
     const name = req.body.name || req.body.fullName;
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
 
     if (!name) {
       return errorResponse(res, 400, 'Name is required');
@@ -34,7 +34,8 @@ const register = async (req, res, next) => {
       name,
       email,
       password,
-      role: role ? String(role).toLowerCase() : 'student',
+      // Public registration creates student accounts only.
+      role: 'student',
     });
 
     const token = generateToken(user._id);

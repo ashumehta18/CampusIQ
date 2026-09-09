@@ -15,6 +15,7 @@ import AdminLayout from './layouts/AdminLayout';
 
 // Dashboard pages (stubs — filled in later phases)
 import StudentDashboard from './pages/student/StudentDashboard';
+import ProfilePending from './pages/student/ProfilePending';
 import StudentProfile from './pages/student/StudentProfile';
 import StudentSubjects from './pages/student/StudentSubjects';
 import StudentAttendance from './pages/student/StudentAttendance';
@@ -53,12 +54,20 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route
+            path="/student/pending"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <ProfilePending />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Student routes */}
           <Route
             path="/student"
             element={
-              <ProtectedRoute allowedRoles={['student']}>
+              <ProtectedRoute allowedRoles={['student']} requiresProfile>
                 <StudentLayout />
               </ProtectedRoute>
             }

@@ -9,7 +9,9 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   // Safely extract user and token payload from backend responses
   const extractAuthData = (res) => {
@@ -31,9 +33,11 @@ export const AuthProvider = ({ children }) => {
       }
       try {
         const res = await authService.getMe();
-        const { user: fetchedUser } = extractAuthData(res);
+        const payload = res?.data?.data || res?.data || {};
+        const fetchedUser = payload.user;
         if (fetchedUser) {
           setUser(fetchedUser);
+          setProfile(payload.profile || null);
         } else {
           throw new Error('User data not found in response');
         }
@@ -57,6 +61,14 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('campusiq_token', token);
       localStorage.setItem('campusiq_user', JSON.stringify(loggedInUser));
       setUser(loggedInUser);
+      setProfileLoading(true);
+      try {
+        const meRes = await authService.getMe();
+        const payload = meRes?.data?.data || meRes?.data || {};
+        setProfile(payload.profile || null);
+      } finally {
+        setProfileLoading(false);
+      }
       return loggedInUser; // caller uses role to redirect
     } else {
       throw new Error('Invalid authentication response structure');
@@ -71,6 +83,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('campusiq_token', token);
       localStorage.setItem('campusiq_user', JSON.stringify(registeredUser));
       setUser(registeredUser);
+      setProfile(null);
       return registeredUser;
     } else {
       throw new Error('Invalid registration response structure');
@@ -81,10 +94,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('campusiq_token');
     localStorage.removeItem('campusiq_user');
     setUser(null);
+    setProfile(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, profile, isLoading, profileLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

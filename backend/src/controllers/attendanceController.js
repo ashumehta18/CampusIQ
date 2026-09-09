@@ -2,6 +2,7 @@ const Attendance = require('../models/Attendance');
 const Student = require('../models/Student');
 const Faculty = require('../models/Faculty');
 const Enrollment = require('../models/Enrollment');
+const Subject = require('../models/Subject');
 const { successResponse, errorResponse } = require('../utils/response');
 
 const VALID_STATUSES = ['PRESENT', 'ABSENT', 'LATE', 'EXCUSED'];
@@ -25,11 +26,24 @@ const markBulkAttendance = async (req, res, next) => {
     const facultyProfile = await Faculty.findOne({ user: req.user._id });
     if (!facultyProfile) return errorResponse(res, 404, 'Faculty profile not found');
 
+    const subject = await Subject.findOne({ _id: subjectId, faculty: facultyProfile._id, isActive: true });
+    if (!subject) return errorResponse(res, 403, 'You are not assigned to this subject');
+
     // Validate all statuses before writing anything
     for (const r of records) {
       if (!VALID_STATUSES.includes(r.status)) {
         return errorResponse(res, 400, `Invalid status "${r.status}". Must be one of: ${VALID_STATUSES.join(', ')}`);
       }
+    }
+
+    const studentIds = records.map((record) => record.studentId);
+    const enrolledStudents = await Enrollment.countDocuments({
+      subject: subjectId,
+      student: { $in: studentIds },
+      isActive: true,
+    });
+    if (enrolledStudents !== new Set(studentIds.map(String)).size) {
+      return errorResponse(res, 400, 'Attendance can only be marked for enrolled students');
     }
 
     const attendanceDate = new Date(date);

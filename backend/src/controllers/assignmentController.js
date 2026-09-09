@@ -3,6 +3,7 @@ const Faculty = require('../models/Faculty');
 const Enrollment = require('../models/Enrollment');
 const Notification = require('../models/Notification');
 const Student = require('../models/Student');
+const Subject = require('../models/Subject');
 const { successResponse, errorResponse } = require('../utils/response');
 
 /**
@@ -75,6 +76,9 @@ const createAssignment = async (req, res, next) => {
 
     const facultyProfile = await Faculty.findOne({ user: req.user._id });
     if (!facultyProfile) return errorResponse(res, 404, 'Faculty profile not found');
+
+    const subject = await Subject.findOne({ _id: subjectId, faculty: facultyProfile._id, isActive: true });
+    if (!subject) return errorResponse(res, 403, 'You are not assigned to this subject');
 
     const assignment = await Assignment.create({
       subject: subjectId,

@@ -8,10 +8,18 @@ import { useAuth } from '../context/AuthContext';
  * Usage:
  *   <ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>
  */
-const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { user, isLoading } = useAuth();
+const ProtectedRoute = ({ children, allowedRoles, requiresProfile = false }) => {
+  const { user, profile, isLoading, profileLoading } = useAuth();
 
   if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
+      </div>
+    );
+  }
+
+  if (profileLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600" />
@@ -24,6 +32,8 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
+
+  if (requiresProfile && !profile) return <Navigate to="/student/pending" replace />;
 
   return children;
 };

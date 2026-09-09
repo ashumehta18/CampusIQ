@@ -12,7 +12,7 @@ const inputStyle = {
 const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'student' });
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,11 +24,7 @@ const Register = () => {
       const user = await register(form);
       toast.success('Account created successfully!');
       
-      // Navigate safely according to returned user role
-      const userRole = user?.role || form.role;
-      if (userRole === 'admin') navigate('/admin/dashboard');
-      else if (userRole === 'faculty') navigate('/faculty/dashboard');
-      else navigate('/student/dashboard');
+      navigate('/student/pending');
     } catch (err) {
       console.error('Registration error details:', err);
       toast.error(err.response?.data?.message || err.message || 'Registration failed');
@@ -113,25 +109,6 @@ const Register = () => {
                 />
               </div>
             ))}
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-600 uppercase tracking-wide mb-1.5">
-                Role
-              </label>
-              <select
-                name="role"
-                value={form.role}
-                onChange={handleChange}
-                className="w-full rounded-xl px-4 py-3 text-sm text-stone-800 transition"
-                style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#a0522d')}
-                onBlur={(e) => (e.target.style.borderColor = '#ede8e1')}
-              >
-                <option value="student">Student</option>
-                <option value="faculty">Faculty</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
 
             <button
               type="submit"

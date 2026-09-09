@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+    "seed": "node src/seed.js",
+    "export:ml": "node src/exportMlDataset.js",
     "test": "echo \"Tests will be added in Phase 12\" && exit 0"
   },
   "keywords": [

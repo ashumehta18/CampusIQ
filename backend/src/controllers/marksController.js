@@ -27,6 +27,10 @@ const enterBulkMarks = async (req, res, next) => {
     const facultyProfile = await Faculty.findOne({ user: req.user._id });
     if (!facultyProfile) return errorResponse(res, 404, 'Faculty profile not found');
 
+    if (String(assessment.faculty) !== String(facultyProfile._id)) {
+      return errorResponse(res, 403, 'You are not assigned to this assessment');
+    }
+
     // Validate all marks before writing anything
     for (const m of marks) {
       if (m.marksObtained < 0) {
@@ -39,6 +43,16 @@ const enterBulkMarks = async (req, res, next) => {
           `Marks ${m.marksObtained} exceed maximum marks ${assessment.maxMarks}`
         );
       }
+    }
+
+    const studentIds = marks.map((mark) => mark.studentId);
+    const enrolledStudents = await Enrollment.countDocuments({
+      subject: assessment.subject,
+      student: { $in: studentIds },
+      isActive: true,
+    });
+    if (enrolledStudents !== new Set(studentIds.map(String)).size) {
+      return errorResponse(res, 400, 'Marks can only be entered for enrolled students');
     }
 
     const bulkOps = marks.map((m) => ({
