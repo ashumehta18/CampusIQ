@@ -3,6 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
+const inputStyle = {
+  border: '1.5px solid #ede8e1',
+  background: '#fdfaf7',
+  outline: 'none',
+};
+
 const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -27,84 +33,121 @@ const Register = () => {
     }
   };
 
+  const fields = [
+    { label: 'Full Name', name: 'name', type: 'text', placeholder: 'John Doe' },
+    { label: 'Email Address', name: 'email', type: 'email', placeholder: 'you@university.edu' },
+    { label: 'Password', name: 'password', type: 'password', placeholder: 'Min. 6 characters', minLength: 6 },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-md w-full max-w-md p-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-blue-600">CampusIQ</h1>
-          <p className="text-gray-500 mt-1 text-sm">Create your account</p>
+    <div className="min-h-screen flex" style={{ background: '#fdfaf7' }}>
+      {/* Left panel */}
+      <div
+        className="hidden lg:flex lg:w-5/12 flex-col justify-between p-12"
+        style={{ background: 'linear-gradient(160deg, #5c2e0a 0%, #a0522d 50%, #c4854a 100%)' }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-amber-900 text-sm"
+            style={{ background: 'linear-gradient(135deg, #f5e6d3, #e8c9a0)' }}
+          >
+            IQ
+          </div>
+          <span className="text-white font-bold text-lg tracking-wide">CampusIQ</span>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="John Doe"
-            />
-          </div>
+        <div>
+          <h2 className="text-4xl font-bold text-white leading-tight mb-4">
+            Join the<br />Campus<br />Network
+          </h2>
+          <p className="text-amber-200/70 text-sm leading-relaxed max-w-xs">
+            Create your account and get instant access to your academic dashboard.
+          </p>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@university.edu"
-            />
-          </div>
+        <div className="space-y-2 text-amber-200/60 text-xs">
+          <p>✓ Real-time attendance tracking</p>
+          <p>✓ Assessment & marks management</p>
+          <p>✓ Assignment submission portal</p>
+        </div>
+      </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              minLength={6}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Min. 6 characters"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-sm">
+          <div className="flex items-center gap-2 mb-8 lg:hidden">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm"
+              style={{ background: 'linear-gradient(135deg, #a0522d, #c4854a)', color: '#fdf3e7' }}
             >
-              <option value="student">Student</option>
-              <option value="faculty">Faculty</option>
-              <option value="admin">Admin</option>
-            </select>
+              IQ
+            </div>
+            <span className="font-bold text-stone-800 text-lg">CampusIQ</span>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg text-sm transition disabled:opacity-60"
-          >
-            {loading ? 'Creating account...' : 'Create Account'}
-          </button>
-        </form>
+          <h1 className="text-2xl font-bold text-stone-800 mb-1">Create account</h1>
+          <p className="text-stone-400 text-sm mb-8">Fill in your details to get started</p>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline font-medium">
-            Sign in
-          </Link>
-        </p>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {fields.map(({ label, name, type, placeholder, minLength }) => (
+              <div key={name}>
+                <label className="block text-xs font-semibold text-stone-600 uppercase tracking-wide mb-1.5">
+                  {label}
+                </label>
+                <input
+                  type={type}
+                  name={name}
+                  value={form[name]}
+                  onChange={handleChange}
+                  required
+                  placeholder={placeholder}
+                  minLength={minLength}
+                  className="w-full rounded-xl px-4 py-3 text-sm text-stone-800 placeholder-stone-300 transition"
+                  style={inputStyle}
+                  onFocus={(e) => (e.target.style.borderColor = '#a0522d')}
+                  onBlur={(e) => (e.target.style.borderColor = '#ede8e1')}
+                />
+              </div>
+            ))}
+
+            <div>
+              <label className="block text-xs font-semibold text-stone-600 uppercase tracking-wide mb-1.5">
+                Role
+              </label>
+              <select
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                className="w-full rounded-xl px-4 py-3 text-sm text-stone-800 transition"
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = '#a0522d')}
+                onBlur={(e) => (e.target.style.borderColor = '#ede8e1')}
+              >
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all duration-150 disabled:opacity-60 mt-2"
+              style={{ background: 'linear-gradient(135deg, #8b4513, #a0522d)' }}
+              onMouseEnter={(e) => !loading && (e.target.style.background = 'linear-gradient(135deg, #723a0f, #8b4513)')}
+              onMouseLeave={(e) => !loading && (e.target.style.background = 'linear-gradient(135deg, #8b4513, #a0522d)')}
+            >
+              {loading ? 'Creating account…' : 'Create Account'}
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-stone-400 mt-6">
+            Already have an account?{' '}
+            <Link to="/login" className="font-semibold" style={{ color: '#a0522d' }}>
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -7,12 +7,14 @@ const {
   updateUser,
   deactivateUser,
   getSystemStats,
+  getAnalytics,
 } = require('../controllers/adminController');
 
 // All admin routes require authentication + admin role
 router.use(authenticateUser, authorizeRoles('admin'));
 
 router.get('/stats', getSystemStats);
+router.get('/analytics', getAnalytics);
 router.get('/users', getAllUsers);
 router.get('/users/:id', getUserById);
 router.put('/users/:id', updateUser);

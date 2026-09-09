@@ -10,4 +10,7 @@ export default defineConfig({
       '/api': 'http://localhost:5000',
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
 })

@@ -16,6 +16,7 @@ const assessmentRoutes = require('./routes/assessmentRoutes');
 const marksRoutes = require('./routes/marksRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use('/api/assessments', assessmentRoutes);
 app.use('/api/marks', marksRoutes);
 app.use('/api/assignments', assignmentRoutes);
 app.use('/api/submissions', submissionRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // 404 handler for unknown routes
 app.use((req, res) => {

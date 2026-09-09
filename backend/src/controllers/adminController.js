@@ -1,6 +1,10 @@
 const User = require('../models/User');
 const Student = require('../models/Student');
 const Faculty = require('../models/Faculty');
+const Department = require('../models/Department');
+const Subject = require('../models/Subject');
+const Enrollment = require('../models/Enrollment');
+const Attendance = require('../models/Attendance');
 const { successResponse, errorResponse } = require('../utils/response');
 
 /**
@@ -107,4 +111,60 @@ const getSystemStats = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllUsers, getUserById, updateUser, deactivateUser, getSystemStats };
+/**
+ * GET /api/admin/analytics
+ * Richer stats for the admin dashboard — departments, subjects, enrollments.
+ */
+const getAnalytics = async (req, res, next) => {
+  try {
+    const [
+      totalStudents,
+      totalFaculty,
+      totalAdmins,
+      totalDepartments,
+      totalSubjects,
+      totalEnrollments,
+      totalAttendanceRecords,
+    ] = await Promise.all([
+      User.countDocuments({ role: 'student' }),
+      User.countDocuments({ role: 'faculty' }),
+      User.countDocuments({ role: 'admin' }),
+      Department.countDocuments({ isActive: true }),
+      Subject.countDocuments({ isActive: true }),
+      Enrollment.countDocuments({ isActive: true }),
+      Attendance.countDocuments(),
+    ]);
+
+    // Students per department
+    const studentsByDept = await Student.aggregate([
+      { $match: { isActive: true } },
+      { $group: { _id: '$department', count: { $sum: 1 } } },
+      {
+        $lookup: {
+          from: 'departments',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'department',
+        },
+      },
+      { $unwind: { path: '$department', preserveNullAndEmpty: true } },
+      { $project: { name: '$department.name', code: '$department.code', count: 1 } },
+      { $sort: { count: -1 } },
+    ]);
+
+    return successResponse(res, 200, 'Analytics fetched', {
+      totalStudents,
+      totalFaculty,
+      totalAdmins,
+      totalDepartments,
+      totalSubjects,
+      totalEnrollments,
+      totalAttendanceRecords,
+      studentsByDept,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getAllUsers, getUserById, updateUser, deactivateUser, getSystemStats, getAnalytics };

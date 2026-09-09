@@ -1,13 +1,11 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useNotifications } from '../context/NotificationContext';
 import toast from 'react-hot-toast';
 
-/**
- * DashboardLayout — shared sidebar + topbar layout for all roles.
- * navItems: array of { label, path, icon } passed per role.
- */
 const DashboardLayout = ({ navItems, children }) => {
   const { user, logout } = useAuth();
+  const { unreadCount } = useNotifications();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -16,55 +14,127 @@ const DashboardLayout = ({ navItems, children }) => {
     navigate('/login');
   };
 
-  const roleColors = {
-    student: 'bg-blue-600',
-    faculty: 'bg-green-600',
-    admin: 'bg-purple-600',
+  // Role-specific accent for active nav item glow
+  const roleAccent = {
+    student: 'from-amber-800 to-stone-900',
+    faculty: 'from-amber-900 to-amber-800',
+    admin: 'from-stone-900 to-amber-900',
   };
 
-  const sidebarColor = roleColors[user?.role] || 'bg-gray-800';
+  const gradient = roleAccent[user?.role] || 'from-stone-900 to-amber-900';
+
+  const roleLabel = {
+    student: 'Student Portal',
+    faculty: 'Faculty Portal',
+    admin: 'Admin Portal',
+  };
+
+  const initials = user?.name
+    ?.split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen" style={{ background: '#fdfaf7' }}>
       {/* Sidebar */}
-      <aside className={`w-64 ${sidebarColor} text-white flex flex-col`}>
-        <div className="px-6 py-5 border-b border-white/20">
-          <h1 className="text-xl font-bold">CampusIQ</h1>
-          <p className="text-xs text-white/70 mt-0.5 capitalize">{user?.role} Portal</p>
+      <aside
+        className={`w-64 bg-gradient-to-b ${gradient} flex flex-col shrink-0`}
+        style={{ boxShadow: '4px 0 24px rgba(0,0,0,0.18)' }}
+      >
+        {/* Brand */}
+        <div className="px-6 py-6 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-amber-900 font-black text-sm shrink-0"
+              style={{ background: 'linear-gradient(135deg, #f5e6d3, #e8c9a0)' }}
+            >
+              IQ
+            </div>
+            <div>
+              <h1 className="text-white font-bold text-base leading-tight tracking-wide">CampusIQ</h1>
+              <p className="text-amber-200/60 text-xs mt-0.5">{roleLabel[user?.role]}</p>
+            </div>
+          </div>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition ${
-                  isActive ? 'bg-white/20 font-medium' : 'hover:bg-white/10'
+                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-150 ${
+                  isActive
+                    ? 'bg-white/15 text-white font-medium shadow-sm'
+                    : 'text-amber-100/70 hover:bg-white/8 hover:text-white'
                 }`
               }
             >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
+              <span className="text-base w-5 text-center shrink-0">{item.icon}</span>
+              <span className="flex-1 truncate">{item.label}</span>
+              {item.label === 'Notifications' && unreadCount > 0 && (
+                <span
+                  className="text-white text-xs rounded-full px-1.5 py-0.5 min-w-[18px] text-center leading-none font-semibold"
+                  style={{ background: '#c0392b' }}
+                >
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
 
-        <div className="px-3 py-4 border-t border-white/20">
-          <div className="px-3 py-2 text-xs text-white/70 truncate">{user?.email}</div>
+        {/* User footer */}
+        <div className="px-3 py-4 border-t border-white/10">
+          <div className="flex items-center gap-3 px-3 py-2 mb-1">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-amber-900 shrink-0"
+              style={{ background: 'linear-gradient(135deg, #f5e6d3, #d4a574)' }}
+            >
+              {initials}
+            </div>
+            <div className="min-w-0">
+              <p className="text-white text-xs font-medium truncate">{user?.name}</p>
+              <p className="text-amber-200/50 text-xs truncate">{user?.email}</p>
+            </div>
+          </div>
           <button
             onClick={handleLogout}
-            className="w-full mt-1 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm hover:bg-white/10 transition"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-amber-100/70 hover:bg-white/8 hover:text-white transition-all duration-150"
           >
-            <span>🚪</span>
-            <span>Logout</span>
+            <span className="text-base w-5 text-center shrink-0">🚪</span>
+            <span>Sign Out</span>
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
+      {/* Main */}
       <main className="flex-1 overflow-auto">
-        <div className="max-w-6xl mx-auto px-6 py-8">{children}</div>
+        {/* Top bar */}
+        <div
+          className="sticky top-0 z-10 px-8 py-4 flex items-center justify-between border-b"
+          style={{ background: 'rgba(253,250,247,0.92)', backdropFilter: 'blur(8px)', borderColor: '#ede8e1' }}
+        >
+          <div>
+            <p className="text-xs text-stone-400 uppercase tracking-widest font-medium">
+              {roleLabel[user?.role]}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-amber-900"
+              style={{ background: 'linear-gradient(135deg, #f5e6d3, #d4a574)' }}
+            >
+              {initials}
+            </div>
+            <span className="text-sm font-medium text-stone-700">{user?.name}</span>
+          </div>
+        </div>
+
+        <div className="max-w-6xl mx-auto px-8 py-8">{children}</div>
       </main>
     </div>
   );

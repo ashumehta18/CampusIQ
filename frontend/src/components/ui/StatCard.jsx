@@ -1,22 +1,32 @@
 /**
  * StatCard — single metric card used in dashboards.
- * Example: Total Students: 120
  */
-const StatCard = ({ label, value, icon, color = 'blue' }) => {
+const StatCard = ({ label, value, icon, color = 'brown' }) => {
   const colors = {
-    blue: 'bg-blue-50 text-blue-600',
-    green: 'bg-green-50 text-green-600',
-    purple: 'bg-purple-50 text-purple-600',
-    yellow: 'bg-yellow-50 text-yellow-600',
-    red: 'bg-red-50 text-red-600',
+    brown:  { bg: '#fdf3e7', text: '#a0522d', border: '#e8c9a0' },
+    blue:   { bg: '#fdf3e7', text: '#a0522d', border: '#e8c9a0' }, // remapped
+    green:  { bg: '#ecfdf5', text: '#065f46', border: '#a7f3d0' },
+    purple: { bg: '#f5f3ff', text: '#5b21b6', border: '#ddd6fe' },
+    yellow: { bg: '#fffbeb', text: '#92400e', border: '#fde68a' },
+    red:    { bg: '#fef2f2', text: '#991b1b', border: '#fecaca' },
   };
 
+  const c = colors[color] || colors.brown;
+
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-      <div className={`text-2xl p-3 rounded-lg ${colors[color]}`}>{icon}</div>
-      <div>
-        <p className="text-sm text-gray-500">{label}</p>
-        <p className="text-2xl font-bold text-gray-800">{value ?? '—'}</p>
+    <div
+      className="bg-white rounded-2xl p-5 flex items-center gap-4"
+      style={{ border: '1px solid #ede8e1', boxShadow: '0 1px 8px rgba(160,82,45,0.06)' }}
+    >
+      <div
+        className="text-xl p-3 rounded-xl shrink-0"
+        style={{ background: c.bg, color: c.text, border: `1px solid ${c.border}` }}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs text-stone-400 font-medium uppercase tracking-wide truncate">{label}</p>
+        <p className="text-2xl font-bold text-stone-800 leading-tight mt-0.5">{value ?? '—'}</p>
       </div>
     </div>
   );

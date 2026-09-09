@@ -5,10 +5,11 @@ const { register, login, getMe, changePassword } = require('../controllers/authC
 const { registerValidator, loginValidator } = require('../validators/authValidator');
 const validate = require('../middleware/validate');
 const { authenticateUser } = require('../middleware/auth');
+const { authLimiter } = require('../middleware/rateLimiter');
 
-// Public routes
-router.post('/register', registerValidator, validate, register);
-router.post('/login', loginValidator, validate, login);
+// Rate-limited public routes
+router.post('/register', authLimiter, registerValidator, validate, register);
+router.post('/login', authLimiter, loginValidator, validate, login);
 
 // Protected routes
 router.get('/me', authenticateUser, getMe);
