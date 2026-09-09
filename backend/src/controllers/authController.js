@@ -14,18 +14,29 @@ const generateToken = (id) => {
 /**
  * POST /api/auth/register
  * Creates a new User. Does NOT create Student/Faculty profile — that is done separately.
- * Admin registration is restricted (only existing admin can create another admin).
  */
 const register = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    // Map fullName -> name if frontend passes fullName
+    const name = req.body.name || req.body.fullName;
+    const { email, password, role } = req.body;
+
+    if (!name) {
+      return errorResponse(res, 400, 'Name is required');
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return errorResponse(res, 409, 'Email already registered');
     }
 
-    const user = await User.create({ name, email, password, role });
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role: role ? String(role).toLowerCase() : 'student',
+    });
+
     const token = generateToken(user._id);
 
     return successResponse(res, 201, 'Registration successful', {
