@@ -23,11 +23,15 @@ const Register = () => {
     try {
       const user = await register(form);
       toast.success('Account created successfully!');
-      if (user.role === 'admin') navigate('/admin/dashboard');
-      else if (user.role === 'faculty') navigate('/faculty/dashboard');
+      
+      // Navigate safely according to returned user role
+      const userRole = user?.role || form.role;
+      if (userRole === 'admin') navigate('/admin/dashboard');
+      else if (userRole === 'faculty') navigate('/faculty/dashboard');
       else navigate('/student/dashboard');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Registration failed');
+      console.error('Registration error details:', err);
+      toast.error(err.response?.data?.message || err.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
