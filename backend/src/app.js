@@ -23,21 +23,16 @@ const app = express();
 // Security headers
 app.use(helmet());
 
-// CORS — allow requests from the React frontend
-// app.use(
-//   cors({
-//     origin: process.env.CLIENT_URL || 'http://localhost:5173',
-//     credentials: true,
-//   })
-// );
-// const cors = require('cors');
+// CORS — allow the configured frontend and the local development server.
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'https://campus-iq-zeta.vercel.app',
+  'http://localhost:5173',
+].filter(Boolean);
 
 app.use(cors({
-  origin: [
-    'https://campus-iq-zeta.vercel.app',
-    'http://localhost:5173' // for local development
-  ],
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
 }));
 
 // Request logging in development

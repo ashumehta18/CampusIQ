@@ -2,11 +2,12 @@ import axios from 'axios';
 
 /**
  * Axios instance pre-configured for the CampusIQ API.
- * baseURL uses the Vite proxy so we just write /api/...
+ * In production, VITE_API_URL points to the deployed backend. During local
+ * development, the Vite proxy handles the relative /api fallback.
  * The JWT token is automatically attached from localStorage on every request.
  */
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: { 'Content-Type': 'application/json' },
 });
 
