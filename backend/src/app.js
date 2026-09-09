@@ -23,15 +23,23 @@ const app = express();
 // Security headers
 app.use(helmet());
 
-// CORS — allow the configured frontend and the local development server.
+// CORS — allow the configured frontend, Vercel deployments, and local development.
 const allowedOrigins = [
-  process.env.CLIENT_URL,
-  'https://campus-iq-zeta.vercel.app',
+  ...(process.env.CLIENT_URL || '').split(',').map((origin) => origin.trim()).filter(Boolean),
   'http://localhost:5173',
 ].filter(Boolean);
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    if (
+      !origin
+      || allowedOrigins.includes(origin)
+      || /^https:\/\/campus-iq(?:-[a-z0-9-]+)?\.vercel\.app$/i.test(origin)
+    ) {
+      return callback(null, true);
+    }
+    return callback(new Error('Origin not allowed by CORS'));
+  },
   credentials: true,
 }));
 
