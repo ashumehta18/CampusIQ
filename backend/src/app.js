@@ -34,7 +34,7 @@ app.use(helmet());
 
 app.use(cors({
   origin: [
-    'https://campus-iq-zeta.vercel.app',
+    'https://campus-iq-zeta.vercel.app/login',
     'http://localhost:5173' // for local development
   ],
   credentials: true
